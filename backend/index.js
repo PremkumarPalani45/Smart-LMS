@@ -3,6 +3,7 @@ import cors from 'cors';
 import dotenv from 'dotenv';
 import morgan from 'morgan';
 import mongooseConnect from './config/mongoose.js';
+import Authroute from './route/Auth.Route.js';
 
 dotenv.config();
 console.log(process.env.PORT)
@@ -15,6 +16,8 @@ app.use(cors());
 if (process.env.NODE_ENV === "dev") {
   app.use(morgan("dev"));
 }
+
+app.use('/api/auth',Authroute)
 
 app.get('/', (req, res) => {
   res.send('Hello World!');
