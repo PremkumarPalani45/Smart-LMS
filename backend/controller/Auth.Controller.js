@@ -1,4 +1,4 @@
-import Model from "../model/UserSchema.js";
+import users from "../model/UserSchema.js";
 import bcrypt from 'bcrypt';
 import jwt from 'jsonwebtoken'
 import { token } from "morgan";
@@ -11,7 +11,7 @@ export const registerUser= async(req,res)=>{
 
 try{
   // check user already there 
-   const existingUser = await Model.findOne({email})
+   const existingUser = await users.findOne({email})
     if(existingUser){
         return res.status(400).json({message:"user already exists"})
     }
@@ -20,7 +20,7 @@ try{
     const salt=await bcrypt.genSalt(10)
     const newPassword= await bcrypt.hash(password,salt);
 
-    const user= new Model({
+    const user= new users({
         name:name,
         email:email,
         password:newPassword
