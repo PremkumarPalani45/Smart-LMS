@@ -9,6 +9,6 @@ const categorySchema=new Schema({
 
 
 
-const Model=mongoose.model('Category',categorySchema)
+const category=mongoose.model('Category',categorySchema)
 
-export default Model;
+export default category;
