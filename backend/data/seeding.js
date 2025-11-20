@@ -27,6 +27,7 @@ const userwithHashedpass= userData.map((user)=>{
 const createUsers= await users.insertMany(userwithHashedpass);
 
 
+
 const instructorUser= createUsers.find((user)=>user.role==="instructor")// to be used a ref in course
 
 const categoryData=JSON.parse(fs.readFileSync(path.join(__dirname,'/data/category.json'),'utf-8'));
