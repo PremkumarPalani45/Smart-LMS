@@ -1,0 +1,45 @@
+/* Base style for ALL nav links */
+.navbar .nav-link {
+  position: relative;
+  color: #3f3f3f;
+  font-weight: 500;
+  padding: 8px 14px;
+  transition: 0.25s ease;
+}
+
+/* Hover effect */
+.navbar .nav-link:hover {
+  color: #4f46e5 !important;
+}
+
+/* Active link */
+.navbar .nav-link.active {
+  color: #4f46e5 !important;
+  font-weight: 600;
+}
+
+/* Underline animation for all links */
+.navbar .nav-link::after {
+  content: "";
+  position: absolute;
+  left: 14px;
+  right: 14px;
+  bottom: 0;
+  height: 2px;
+  background-color: #4f46e5;
+  transform: scaleX(0);
+  transform-origin: left;
+  transition: transform 0.25s ease;
+}
+
+/* Show underline on hover and active */
+.navbar .nav-link:hover::after,
+.navbar .nav-link.active::after {
+  transform: scaleX(1);
+}
+.brand-icon {
+  width: 32px;
+  height: 32px;
+  object-fit: contain;
+  border-radius: 6px;
+}

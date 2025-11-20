@@ -1,0 +1,22 @@
+/* Wrapper */
+.login-wrapper {
+  background: #f5f7ff;
+}
+
+/* Left Section Gradient Background */
+.illustration-section {
+  background: linear-gradient(135deg, #4f46e5, #6366f1);
+  padding: 40px;
+}
+
+/* Login Card */
+.login-card {
+  background: white;
+  border-radius: 14px;
+}
+
+/* Focus Effect */
+.form-control:focus,
+.btn:focus {
+  box-shadow: 0 0 0 0.15rem rgba(79, 70, 229, 0.2);
+}
