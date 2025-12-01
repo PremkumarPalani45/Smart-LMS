@@ -3,7 +3,10 @@ import "./navbar.css";
 
 export default function Navbar() {
   return (
-    <nav className="navbar navbar-expand-lg bg-white shadow-sm py-3">
+   <nav className="navbar navbar-expand-lg navbar-light bg-white shadow-sm fixed-top">
+
+
+
       <div className="container">
 
         {/* Brand */}

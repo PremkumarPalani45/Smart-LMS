@@ -1,12 +1,56 @@
-.register-wrapper {
-  background: #f5f7ff;
+/* Page background */
+.register-container {
+  background: #eef2ff;        /* soft LMS background */
+  padding: 20px;
 }
 
+/* Centered register box */
 .register-card {
-  border-radius: 12px;
+  background: #ffffff;
+  border-radius: 18px;
+  border: 1px solid #e5e7eb;
+  width: 100%;
+  max-width: 430px;
 }
 
+/* Form heading */
+.register-card h3 {
+  font-size: 1.4rem;
+}
+
+/* Inputs smaller & modern */
+.form-control {
+  padding: 10px 14px !important;
+  font-size: 0.95rem !important;
+  border-radius: 10px;
+}
+
+/* Buttons – modern rounded */
+.btn {
+  padding: 10px !important;
+  border-radius: 10px !important;
+}
+
+/* Focus glow */
 .form-control:focus,
 .btn:focus {
-  box-shadow: 0 0 0 0.15rem rgba(79, 70, 229, 0.2);
+  box-shadow: 0 0 0 0.15rem rgba(59, 130, 246, 0.3);
+}
+
+/* Links without underline */
+.register-card a {
+  text-decoration: none !important;
+  color: #2563eb;
+}
+
+.register-card a:hover {
+  color: #1d4ed8;
+}
+
+/* Mobile responsive */
+@media (max-width: 500px) {
+  .register-card {
+    padding: 1.5rem !important;
+    border-radius: 14px;
+  }
 }

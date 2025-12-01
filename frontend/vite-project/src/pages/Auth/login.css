@@ -1,22 +1,101 @@
-/* Wrapper */
-.login-wrapper {
-  background: #f5f7ff;
+/* Page background */
+.login-container {
+  background: #eef2ff;          /* soft background for page */
+  padding: 24px;
 }
 
-/* Left Section Gradient Background */
-.illustration-section {
-  background: linear-gradient(135deg, #4f46e5, #6366f1);
-  padding: 40px;
-}
-
-/* Login Card */
+/* Main card */
 .login-card {
-  background: white;
-  border-radius: 14px;
+  background: #fff;
+  border-radius: 18px;
+  overflow: hidden;
+  width: 100%;
+  max-width: 900px;
+  border: 1px solid #e5e7eb;
 }
 
-/* Focus Effect */
+/* IMAGE SIDE */
+.login-image-section {
+  flex: 1;
+  background: #ffffff;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 20px;
+}
+
+.login-image-section img {
+  width: 100%;
+  height: auto;
+  object-fit: contain;
+  border-radius: 12px;
+}
+
+/* FORM SIDE */
+.login-form-section {
+  flex: 1;
+}
+
+/* Title size on all devices */
+.login-form-section h3 {
+  font-size: 1.4rem;
+}
+
+/* Form inputs smaller (not huge) */
+.form-control {
+  padding: 10px 14px !important;
+  font-size: 0.95rem !important;
+  border-radius: 10px;
+}
+
+.btn {
+  padding: 10px !important;
+  border-radius: 10px !important;
+}
+
+/* Focus state */
 .form-control:focus,
 .btn:focus {
-  box-shadow: 0 0 0 0.15rem rgba(79, 70, 229, 0.2);
+  box-shadow: 0 0 0 0.15rem rgba(59, 130, 246, 0.3);
+}
+
+/* Remove underline inside login card links */
+.login-card a {
+  text-decoration: none !important;
+  color: #2563eb;
+}
+
+.login-card a:hover {
+  color: #1d4ed8;
+}
+
+/* ========================= */
+/*      RESPONSIVE PART      */
+/* ========================= */
+
+/* For small screens (phones) */
+@media (max-width: 767.98px) {
+  .login-container {
+    padding: 12px;
+  }
+
+  .login-card {
+    max-width: 420px;       /* smaller width on mobile */
+  }
+
+  .login-form-section {
+    padding: 1.5rem !important;
+  }
+}
+
+/* For very small phones */
+@media (max-width: 400px) {
+  .login-card {
+    max-width: 100%;
+    border-radius: 0;       /* optional: full width feel */
+  }
+
+  .login-form-section {
+    padding: 1.25rem !important;
+  }
 }
