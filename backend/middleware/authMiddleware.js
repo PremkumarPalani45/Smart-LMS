@@ -1,5 +1,5 @@
 import jwt from 'jsonwebtoken'
-import Model from '../model/UserSchema'
+import Model from '../model/UserSchema.js'
 
 export const authProtect= async(req,res,next)=>{
     // bearer token

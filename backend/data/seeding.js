@@ -1,66 +1,95 @@
+// data/seeding.js
 import path from "path";
-import category from "../model/CategorySchema";
-import course from "../model/CourseSchema";
-import users from "../model/UserSchema";
-import fs from 'fs'
-import bcyrpt from 'bcrypt'
-const importData=async()=>{
+import fs from "fs";
+import bcrypt from "bcrypt";
+import { fileURLToPath } from "url";
+
+// import DB connection (the "different file" you mentioned)
+import mongooseConnect from "../config/mongoose.js"; // <-- adjust path based on where your db file is
+
+import Category from "../model/CategorySchema.js";
+import Course from "../model/CourseSchema.js";
+import User from "../model/UserSchema.js";
+
+// __dirname workaround for ES modules
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
+
+mongooseConnect();
+
+const importData = async () => {
+  try {
+    // clear the database
+    await User.deleteMany();
+    await Course.deleteMany();
+    await Category.deleteMany();
+
+    // insert the data
+    const userData = JSON.parse(
+      fs.readFileSync(path.join(__dirname, "users.json"), "utf-8")
+    );
+
+    // hash password
+    const usersWithHashedPass = userData.map((user) => {
+      const salt = bcrypt.genSaltSync(10);
+      const hashedPassword = bcrypt.hashSync(user.password, salt);
+      return { ...user, password: hashedPassword };
+    });
+
+    const createdUsers = await User.insertMany(usersWithHashedPass);
+    console.log("instrutor")
+    const instructorUser = createdUsers.find(
+      (user) => user.role === "Instructor"
+    ); // to be used as ref in course
+    const categoryData = JSON.parse(
+      fs.readFileSync(path.join(__dirname, "category.json"), "utf-8")
+    );
+
+    const createdCategories = await Category.insertMany(categoryData);
+
+    const webDevCategory = createdCategories.find(
+      (cat) => cat.name === "Web Dev"
+    );
+
+    // insert courses
+    const courses = [
+      {
+        title: "Complete Web Dev Course 2025",
+        description: "Random text about the course",
+        price: 99,
+        instructor: instructorUser?._id,
+        category: webDevCategory?._id,
+      },
+    ];
 
 
-    try{
-//clear the database
-await users.deleteMany();
-await course.deleteMany();
-await category.deleteMany();
-//insert the data
-const userData=JSON.parse(fs.readFileSync(path.join(__dirname,'/data/users.json'),'utf-8'));
+    await Course.insertMany(courses);
 
+    console.log("✅ Data is added to database");
+    process.exit();
+  } catch (err) {
+    console.log(`❌ Error while adding data: ${err}`);
+    process.exit(1);
+  }
+};
 
-//hash password
-const userwithHashedpass= userData.map((user)=>{
-    const salt= bcyrpt.genSaltSync(10);
-    const hashpassword= bcyrpt.hashSync(user.password,salt)
+const destroyData = async () => {
+  try {
+    await User.deleteMany();
+    await Course.deleteMany();
+    await Category.deleteMany();
 
-    return{...user,password:hashpassword}
-})
+    console.log("🗑️ Data is destroyed");
+    process.exit();
+  } catch (err) {
+    console.log(`❌ Error while destroying data: ${err}`);
+    process.exit(1);
+  }
+};
 
-const createUsers= await users.insertMany(userwithHashedpass);
-
-
-
-const instructorUser= createUsers.find((user)=>user.role==="instructor")// to be used a ref in course
-
-const categoryData=JSON.parse(fs.readFileSync(path.join(__dirname,'/data/category.json'),'utf-8'));
-
-const createcategory= await category.insertMany(categoryData);
-
-const webDevcategory=createcategory.find((category)=>category.name==="Web Dev");
-
-//insert courses
-const courses=[{
-   title: 'complete web dev course 2025',
-   description: 'random text about the courses',
-   price:99,
-   instructor:instructorUser.id,
-   category:webDevcategory.id
-
-}]
-
-await course.insertMany(courses);
-
-console.log("data is added to database")
-}
-catch(err){
-console.log(`error while adding data ${err}`)
-}
-
-//remove data
-const destroyData=()=>{
-   console.log("data is destroyed")
-   process.exit()
-}
-
-// logic to add script file to run seed file for different methods
-
-
+// logic to run seed file for different methods
+if (process.argv[2] === "-d") {
+  destroyData();
+} else {
+  importData();
 }
