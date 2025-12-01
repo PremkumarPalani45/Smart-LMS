@@ -10,6 +10,7 @@ export default function Register() {
     password: "",
     confirm: ""
   });
+
   const [showPwd, setShowPwd] = useState(false);
   const [showConfirmPwd, setShowConfirmPwd] = useState(false);
 
@@ -20,33 +21,30 @@ export default function Register() {
 
   function handleSubmit(e) {
     e.preventDefault();
-
     if (form.password !== form.confirm) {
       alert("Passwords do not match!");
       return;
     }
-
-    // simulate success
     navigate("/login");
   }
 
   return (
-    <div className="register-wrapper d-flex justify-content-center align-items-center min-vh-100">
-      <div className="card shadow-sm p-4 p-md-5 register-card" style={{ maxWidth: 450, width: "100%" }}>
-        
-        <h3 className="text-center mb-3 fw-semibold">Create an Account</h3>
-        <p className="text-center text-muted small mb-4">
-          Fill the details to register in Smart LMS
+    <div className="register-container d-flex align-items-center justify-content-center min-vh-100">
+      <div className="register-card shadow-lg p-4 p-md-5">
+
+        <h3 className="fw-semibold mb-2 text-center">Create Account</h3>
+        <p className="text-muted small text-center mb-4">
+          Join Smart LMS and begin your learning journey
         </p>
 
         <form onSubmit={handleSubmit}>
           
           <div className="mb-3">
             <label className="form-label small">Full Name</label>
-            <input 
+            <input
               type="text"
               name="name"
-              className="form-control form-control-lg"
+              className="form-control"
               placeholder="Your full name"
               value={form.name}
               onChange={handleChange}
@@ -55,10 +53,10 @@ export default function Register() {
 
           <div className="mb-3">
             <label className="form-label small">Email</label>
-            <input 
+            <input
               type="email"
               name="email"
-              className="form-control form-control-lg"
+              className="form-control"
               placeholder="you@example.com"
               value={form.email}
               onChange={handleChange}
@@ -68,17 +66,17 @@ export default function Register() {
           <div className="mb-3">
             <label className="form-label small">Password</label>
             <div className="input-group">
-              <input 
+              <input
                 type={showPwd ? "text" : "password"}
                 name="password"
-                className="form-control form-control-lg"
+                className="form-control"
                 placeholder="Create password"
                 value={form.password}
                 onChange={handleChange}
               />
-              <button 
+              <button
                 type="button"
-                className="btn btn-outline-secondary btn-lg"
+                className="btn btn-outline-secondary"
                 onClick={() => setShowPwd(!showPwd)}
               >
                 {showPwd ? "Hide" : "Show"}
@@ -89,17 +87,17 @@ export default function Register() {
           <div className="mb-3">
             <label className="form-label small">Confirm Password</label>
             <div className="input-group">
-              <input 
+              <input
                 type={showConfirmPwd ? "text" : "password"}
                 name="confirm"
-                className="form-control form-control-lg"
+                className="form-control"
                 placeholder="Confirm password"
                 value={form.confirm}
                 onChange={handleChange}
               />
-              <button 
+              <button
                 type="button"
-                className="btn btn-outline-secondary btn-lg"
+                className="btn btn-outline-secondary"
                 onClick={() => setShowConfirmPwd(!showConfirmPwd)}
               >
                 {showConfirmPwd ? "Hide" : "Show"}
@@ -108,12 +106,14 @@ export default function Register() {
           </div>
 
           <div className="d-grid mt-3">
-            <button className="btn btn-primary btn-lg">Register</button>
+            <button className="btn btn-primary" type="submit">
+              Register
+            </button>
           </div>
 
-          <p className="text-center mt-3 small">
+          <p className="text-center mt-3 small mb-0">
             Already have an account?{" "}
-            <Link to="/login" className="fw-semibold">Login</Link>
+            <Link className="fw-semibold" to="/login">Login</Link>
           </p>
 
         </form>
