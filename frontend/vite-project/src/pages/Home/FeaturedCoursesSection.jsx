@@ -1,71 +1,95 @@
 // src/pages/Home/FeaturedCoursesSection.jsx
+import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
+import axios from "axios";
+import courseImg1 from "../../public/assets/course1.jpg";
+import courseImg2 from "../../assets/course2.jpg";
+import courseImg3 from "../../assets/course3.jpg";
 
-export default function FeaturedCoursesSection({ featuredCourses }) {
+export default function FeaturedCoursesSection() {
+  const [courses, setCourses] = useState([]);
+  const[isloading,setisloading]=useState(true);
+
+  useEffect(() => {
+    async function fetchCourses() {
+      try {
+        const res = await axios.get("http://localhost:3000/api/courses");
+
+        // assuming backend returns: { success: true, data: [...] }
+        console.log(res.data)
+        setCourses(res.data.data || res.data);
+      } catch (err) {
+        console.error("Error fetching courses:", err);
+      }
+      finally{
+        setisloading(false);
+      }
+    }
+
+    fetchCourses();
+  }, []); // empty array → run once on mount
+
+  if(isloading) return(<p>{"loading..."}</p>)
+
   return (
     <section className="py-5">
       <div className="container">
         <div className="section-card p-4">
-          {/* Centered title */}
+
           <h3 className="section-title text-center mb-2">Featured courses</h3>
           <p className="text-muted text-center small mb-4">
             A few good starting points that many students choose first.
           </p>
 
           <div className="row g-4">
-            {featuredCourses.map((course) => (
-              <div className="col-12 col-md-6 col-lg-4" key={course.id}>
-                <Link
-                  to={`/courses/${course.id}`}
-                  className="course-card-link"
-                >
+            {courses.map((course) => (
+              <div className="col-12 col-md-6 col-lg-4" key={course._id}>
+                <Link to={`/courses/${course._id}`} className="course-card-link">
                   <article className="course-card">
-                    {/* IMAGE + CATEGORY BADGE */}
+
                     <div className="course-image-wrapper">
                       <img
-                        src={course.image}
+                       src={course.image}
                         alt={course.title}
                         className="course-thumb"
                       />
+
                       <span className="course-category-badge">
-                        {course.category}
+                        {course.category?.name || "Category"}
                       </span>
                     </div>
 
-                    {/* TEXT BODY */}
                     <div className="course-card-body">
                       <h5 className="course-title mb-2">{course.title}</h5>
 
                       <p className="small text-muted mb-1">
-                        {course.level} • {course.duration}
+                        {course.description} • {course.duration}
                       </p>
 
                       <p className="small text-muted mb-3">
-                        👨‍🎓 {course.students.toLocaleString()} students enrolled
+                        👨‍🎓 {course.studentsEnrolled || 0} students enrolled
                       </p>
 
-                      {/* Bottom row: rating left, instructor right */}
                       <div className="course-meta-row">
-                        <span className="course-rating">
-                          ⭐ {course.rating.toFixed(1)}
-                        </span>
+                        <span className="course-rating">⭐ {course.rating || 4.5}</span>
                         <span className="course-instructor">
-                          {course.instructor}
+                          {course.instructor?.name || "Instructor"}
                         </span>
                       </div>
                     </div>
+
                   </article>
                 </Link>
               </div>
             ))}
           </div>
 
-          {/* Big See all button below cards */}
           <div className="text-center mt-4">
             <Link to="/courses" className="btn btn-outline-primary btn-lg">
               See all courses
             </Link>
           </div>
+
         </div>
       </div>
     </section>

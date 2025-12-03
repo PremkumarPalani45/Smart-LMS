@@ -1,56 +1,74 @@
-/* Page background */
+/* PAGE BACKGROUND */
 .register-container {
-  background: #eef2ff;        /* soft LMS background */
-  padding: 20px;
+  min-height: 100vh;
+  padding: 40px 20px;      /* Creates margin-top effect for card */
+  display: flex;
+  align-items: flex-start; /* Places card lower (not centered vertically) */
+  justify-content: center;
+  background: linear-gradient(135deg,#6d5ef8 0%,#d75de6 50%,#ff6aa6 100%);
+  font-family: Inter, system-ui;
 }
 
-/* Centered register box */
+/* MAIN CARD */
 .register-card {
-  background: #ffffff;
-  border-radius: 18px;
-  border: 1px solid #e5e7eb;
   width: 100%;
-  max-width: 430px;
+  max-width: 1100px;
+  min-height: 600px;      /* Ensures the card has height so image fills it */
+  background: #fff;
+  border-radius: 16px;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  box-shadow: 0 20px 50px rgba(0,0,0,0.15);
+    margin-top: 40px;  
+    background: rgba(255,255,255,0.92); /* more opaque for better readability */
+  box-shadow:
+    0 18px 40px rgba(17,24,39,0.18),   /* outer shadow */
+    inset 0 1px 0 rgba(255,255,255,0.6); /* subtle top highlight */
+  border: 1px solid rgba(255,255,255,0.55);
 }
 
-/* Form heading */
-.register-card h3 {
-  font-size: 1.4rem;
+/* IMAGE SIDE – FULL HEIGHT, FULL IMAGE, NO CROP */
+.register-image-side {
+  display: none;
 }
 
-/* Inputs smaller & modern */
-.form-control {
-  padding: 10px 14px !important;
-  font-size: 0.95rem !important;
+@media (min-width: 768px) {
+  .register-card {
+    flex-direction: row;
+  }
+
+  .register-image-side {
+    display: flex;
+    flex: 0 0 45%;        /* Left side width */
+    background: #fff;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;        /* Prevent image from touching edges */
+  }
+
+  .register-image-inner img {
+    width: auto;
+    height: 100%;           /* FULL HEIGHT OF CARD */
+    max-height: 100%;       /* Prevent overflow */
+    object-fit: contain;    /* No cropping */
+    display: block;
+  }
+}
+
+/* FORM SIDE */
+.register-form-side {
+  flex: 1;
+  padding: 40px 50px;
+}
+
+input.form-control {
+  height: 50px;
   border-radius: 10px;
 }
 
-/* Buttons – modern rounded */
-.btn {
-  padding: 10px !important;
-  border-radius: 10px !important;
-}
-
-/* Focus glow */
-.form-control:focus,
-.btn:focus {
-  box-shadow: 0 0 0 0.15rem rgba(59, 130, 246, 0.3);
-}
-
-/* Links without underline */
-.register-card a {
-  text-decoration: none !important;
-  color: #2563eb;
-}
-
-.register-card a:hover {
-  color: #1d4ed8;
-}
-
-/* Mobile responsive */
-@media (max-width: 500px) {
-  .register-card {
-    padding: 1.5rem !important;
-    border-radius: 14px;
-  }
+.gradient-btn,
+.btn-primary {
+  height: 52px;
+  border-radius: 10px;
 }
