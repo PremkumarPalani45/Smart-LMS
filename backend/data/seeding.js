@@ -24,7 +24,7 @@ const importData = async () => {
     await Course.deleteMany();
     await Category.deleteMany();
 
-    // insert the data
+    // load data files
     const userData = JSON.parse(
       fs.readFileSync(path.join(__dirname, "users.json"), "utf-8")
     );
@@ -37,30 +37,59 @@ const importData = async () => {
     });
 
     const createdUsers = await User.insertMany(usersWithHashedPass);
-    console.log("instrutor")
-    const instructorUser = createdUsers.find(
-      (user) => user.role === "Instructor"
-    ); // to be used as ref in course
+    console.log("✅ Users created");
+
+    // pick an instructor (fallback to first user if no Instructor role found)
+    let instructorUser = createdUsers.find((u) => u.role === "Instructor");
+    if (!instructorUser && createdUsers.length > 0) {
+      instructorUser = createdUsers[0];
+      console.warn(
+        "⚠️ No user with role 'Instructor' found — falling back to first user as instructor."
+      );
+    }
+
     const categoryData = JSON.parse(
       fs.readFileSync(path.join(__dirname, "category.json"), "utf-8")
     );
 
     const createdCategories = await Category.insertMany(categoryData);
+    console.log("✅ Categories created");
 
-    const webDevCategory = createdCategories.find(
-      (cat) => cat.name === "Web Dev"
-    );
+    // find categories by name (case-sensitive to match your category.json names)
+    const webDevCategory = createdCategories.find((c) => c.name === "Web Dev");
+    const dsaCategory = createdCategories.find((c) => c.name === "DSA");
+    const uiuxCategory = createdCategories.find((c) => c.name === "UI/UX");
 
-    // insert courses
+    // build courses — one per category, each referencing the instructor
     const courses = [
-      {
-        title: "Complete Web Dev Course 2025",
-        description: "Random text about the course",
-        price: 99,
-        instructor: instructorUser?._id,
-        category: webDevCategory?._id,
-      },
-    ];
+  {
+    title: "JavaScript Course 2025",
+    description: "Entire JS course edition",
+    price: 99,
+    instructor: instructorUser?._id,
+    category: webDevCategory?._id,
+    image:
+      "https://images.unsplash.com/photo-1518770660439-4636190af475?auto=format&fit=crop&w=800&q=60",
+  },
+  {
+    title: "Data Structures & Algorithms 2025",
+    description: "Complete DSA course with problems and solutions",
+    price: 99,
+    instructor: instructorUser?._id,
+    category: dsaCategory?._id,
+    image:
+      "https://images.unsplash.com/photo-1555949963-aa79dcee981c?auto=format&fit=crop&w=800&q=60",
+  },
+  {
+    title: "UI/UX Course 2025",
+    description: "Full UI/UX design fundamentals and real projects",
+    price: 99,
+    instructor: instructorUser?._id,
+    category: uiuxCategory?._id,
+    image:
+      "https://images.unsplash.com/photo-1587614382346-4ec70e388b28?auto=format&fit=crop&w=800&q=60",
+  },
+];
 
 
     await Course.insertMany(courses);
