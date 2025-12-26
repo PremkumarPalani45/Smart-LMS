@@ -6,6 +6,7 @@ import mongooseConnect from './config/mongoose.js';
 import Authroute from './route/Auth.Route.js';
 import courseRoute from './route/Course.Route.js';
 import categoryRoute from './route/Category.Route.js';
+import paymentRoute from './route/payment.Route.js';
 
 dotenv.config();
 console.log(process.env.PORT)
@@ -19,9 +20,17 @@ if (process.env.NODE_ENV === "dev") {
   app.use(morgan("dev"));
 }
 
+
+
+app.use((req, res, next) => {
+  console.log("REQUEST:", req.method, req.url);
+  next();
+});
+
 app.use('/api/auth',Authroute)
 app.use('/api/courses',courseRoute)
 app.use('/api/category',categoryRoute)
+app.use('/api/payment',paymentRoute)
 
 app.get('/', (req, res) => {
   res.send('Hello World!');

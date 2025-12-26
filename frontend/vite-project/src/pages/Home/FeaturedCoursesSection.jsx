@@ -13,11 +13,12 @@ export default function FeaturedCoursesSection() {
   useEffect(() => {
     async function fetchCourses() {
       try {
-        const res = await axios.get("http://localhost:3000/api/courses");
+       const res = await axios.get("http://localhost:3003/api/courses");
 
-        // assuming backend returns: { success: true, data: [...] }
-        console.log(res.data)
-        setCourses(res.data.data || res.data);
+console.log("API response:", res.data);
+
+setCourses(res.data.courses);
+
       } catch (err) {
         console.error("Error fetching courses:", err);
       }

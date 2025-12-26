@@ -6,6 +6,7 @@ import Courses from "./pages/Courses/Courses";
 import Login from "./pages/Auth/Login";
 import Register from "./pages/Auth/Register";
 import { Routes, Route } from "react-router-dom";
+import SingleCourses from "./pages/Courses/SingleCourse";
 
 export default function App() {
   return (
@@ -16,6 +17,7 @@ export default function App() {
         <Routes>
           <Route path="/" element={<Home />} />
           <Route path="/courses" element={<Courses />} />
+          <Route path="/courses/:id" element={<SingleCourses />} />
           <Route path="/login" element={<Login />} />
           <Route path="/register" element={<Register />} />
         </Routes>

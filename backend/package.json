@@ -5,22 +5,22 @@
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "start":"node --watch index.js",
-    "data-import":"node data/seeding.js",
-    "data:destroy":"node data/seeder.js -d"
-
+    "start": "node --watch index.js",
+    "data-import": "node data/seeding.js",
+    "data:destroy": "node data/seeder.js -d"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
   "type": "module",
   "dependencies": {
+    "bcrypt": "^6.0.0",
     "cors": "^2.8.5",
     "dotenv": "^17.2.2",
     "express": "^5.1.0",
+    "jsonwebtoken": "^9.0.2",
     "mongoose": "^8.18.1",
     "morgan": "^1.10.1",
-     "bcrypt": "^6.0.0",
-    "jsonwebtoken": "^9.0.2"
+    "stripe": "^11.18.0"
   }
 }

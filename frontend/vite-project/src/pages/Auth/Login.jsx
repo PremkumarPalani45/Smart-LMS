@@ -2,11 +2,13 @@ import React, { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import "./login.css";
 //import illustration from "../../assets/login.jpg";
+import { useAuth } from "../../context/AuthContext";
 
 export default function Login() {
   const navigate = useNavigate();
   const [form, setForm] = useState({ email: "", password: "" });
   const [showPwd, setShowPwd] = useState(false);
+  const {login,logout}=useAuth();
 
   function handleChange(e) {
     const { name, value } = e.target;
@@ -15,7 +17,8 @@ export default function Login() {
 
   function handleSubmit(e) {
     e.preventDefault();
-    navigate("/courses");
+    login(form.email,form.password)
+    navigate("/");
   }
 
   return (
