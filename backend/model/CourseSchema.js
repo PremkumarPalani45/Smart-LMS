@@ -1,6 +1,21 @@
 import mongoose, { Schema } from "mongoose";
 
 
+//lesson schema
+
+const lessonSchema=new Schema({
+    title:{type:String,required:true},
+    videoUrl:{type:String,required:true}
+})
+
+
+//module schema
+
+const moduleSchema=new Schema({
+    title:{type:String,required:true},
+    lessons:[lessonSchema],
+})
+
 const courseSchema=new Schema({
      title:{type:String,required:true},
     description:{type:String,required:true},
@@ -15,9 +30,16 @@ const courseSchema=new Schema({
   type: String,
   required: true
 },
+enrolledStudents:[{
+    type:Schema.Types.ObjectId,
+        ref:'User'}],
 
-});
-
+       modules: [moduleSchema], 
+  },
+  {
+    timestamps: true, 
+  }
+);
 
 
 
