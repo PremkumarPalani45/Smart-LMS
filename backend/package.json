@@ -7,7 +7,8 @@
     "test": "echo \"Error: no test specified\" && exit 1",
     "start": "node --watch index.js",
     "data-import": "node data/seeding.js",
-    "data:destroy": "node data/seeder.js -d"
+    "data:destroy": "node data/seeder.js -d",
+    "seed:enroll": "node data/enrollUserAndAddContent.js"
   },
   "keywords": [],
   "author": "",

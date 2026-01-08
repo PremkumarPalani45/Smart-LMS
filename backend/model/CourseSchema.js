@@ -5,8 +5,10 @@ import mongoose, { Schema } from "mongoose";
 
 const lessonSchema=new Schema({
     title:{type:String,required:true},
-    videoUrl:{type:String,required:true}
-})
+    videoUrl:{type:String,required:true},
+    duration: { type: Number } // in minutes
+});
+
 
 
 //module schema

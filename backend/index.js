@@ -7,6 +7,7 @@ import Authroute from './route/Auth.Route.js';
 import courseRoute from './route/Course.Route.js';
 import categoryRoute from './route/Category.Route.js';
 import paymentRoute from './route/payment.Route.js';
+import UserRoute from './route/User.Route.js';
 
 dotenv.config();
 console.log(process.env.PORT)
@@ -31,6 +32,7 @@ app.use('/api/auth',Authroute)
 app.use('/api/courses',courseRoute)
 app.use('/api/category',categoryRoute)
 app.use('/api/payment',paymentRoute)
+app.use('/api/user',UserRoute)
 
 app.get('/', (req, res) => {
   res.send('Hello World!');

@@ -1,57 +1,57 @@
 import users from "../model/UserSchema.js";
-import bcrypt from 'bcrypt';
-import jwt from 'jsonwebtoken'
-import { token } from "morgan";
+import bcrypt from "bcrypt";
+import jwt from "jsonwebtoken";
 
-export const registerUser= async(req,res)=>{
-// get user 
+export const registerUser = async (req, res) => {
+  console.log("🔥 REGISTER API HIT");
+  const { name, email, password } = req.body;
 
-
-  const{name,email,password}= req.body;
-
-try{
-  // check user already there 
-   const existingUser = await users.findOne({email})
-    if(existingUser){
-        return res.status(400).json({message:"user already exists"})
+  try {
+    // 1. Check if user already exists
+    const existingUser = await users.findOne({ email });
+    if (existingUser) {
+      return res.status(409).json({ message: "User already exists" });
     }
 
-    // create password hash
-    const salt=await bcrypt.genSalt(10)
-    const newPassword= await bcrypt.hash(password,salt);
+    // 2. Hash password
+    const salt = await bcrypt.genSalt(10);
+    const hashedPassword = await bcrypt.hash(password, salt);
 
-    const user= new users({
-        name:name,
-        email:email,
-        password:newPassword
-    })
+    // 3. Create user (explicit role)
+    const user = new users({
+      name,
+      email,
+      password: hashedPassword,
+      role: "Student" // must match enum exactly
+    });
 
+    // 4. Save user (IMPORTANT)
     await user.save();
-   // create and return token
+    console.log("✅ USER SAVED:", user._id);
 
-   const payload= {
-    user:{
-        id:user.id,
-        role:user.role
-    }
-   }
+    // 5. Create JWT
+    const payload = {
+      user: {
+        id: user._id,
+        role: user.role
+      }
+    };
 
-   jwt.sign(payload,process.env.JWT_SECRET, { expiresIn: '1h' }
-    ,(err,token)=>{
-        if(err){
-           console.log(err)
-        }
-        // return token
-        return res.status(201).json({token:token})
-    }
-   )
-}
-catch(err){
-     console.log(err);
-    //  throw new Error(err);
-    return  res.status(500).send("server Error")
-}
-}
+    jwt.sign(
+      payload,
+      process.env.JWT_SECRET,
+      { expiresIn: "1h" },
+      (err, token) => {
+        if (err) throw err;
+        return res.status(201).json({ token });
+      }
+    );
+
+  } catch (err) {
+    console.error("❌ REGISTER ERROR:", err);
+    return res.status(500).json({ message: err.message });
+  }
+};
 
 export const loginUser = async (req, res) => {
   const { email, password } = req.body;

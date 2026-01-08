@@ -1,9 +1,5 @@
 import course from "../model/CourseSchema.js";
-import course from "../model/CourseSchema.js";
 
-
-
-import Course from "../model/CourseSchema.js";
 
 export const getCourses = async (req, res) => {
   try {
@@ -31,7 +27,7 @@ export const getCourses = async (req, res) => {
       filter.price = { $gt: 0 };
     }
 
-    const courses = await Course.find(filter)
+    const courses = await course.find(filter)
       .populate("category", "name")
       .populate("instructor", "name");
 
