@@ -5,6 +5,7 @@ import axios from "axios";
 import courseImg1 from "../../public/assets/course1.jpg";
 import courseImg2 from "../../assets/course2.jpg";
 import courseImg3 from "../../assets/course3.jpg";
+const backendUrl= import.meta.env.VITE_BACKEND_URL;
 
 export default function FeaturedCoursesSection() {
   const [courses, setCourses] = useState([]);
@@ -13,7 +14,7 @@ export default function FeaturedCoursesSection() {
   useEffect(() => {
     async function fetchCourses() {
       try {
-       const res = await axios.get("http://localhost:3003/api/courses");
+       const res = await axios.get(`${backendUrl}/api/courses`);
 
 console.log("API response:", res.data);
 

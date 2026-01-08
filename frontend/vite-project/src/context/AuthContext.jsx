@@ -3,40 +3,42 @@ import axios from "axios";
 
 const AuthContext = createContext();
 
-const AuthProvider = ({ children }) => {
+export const AuthProvider = ({ children }) => {
   const [user, setUser] = useState(null);
+  const [authLoading,setauthLoading]=useState(true);
 
   // 🔥 Restore user after refresh
   useEffect(() => {
-    const storedUser = localStorage.getItem("user");
+    const storedUser = localStorage.getItem("token");
+    console.log("🔁 Auth restore effect running");
+  console.log("📦 Token from localStorage:", storedUser);
     if (storedUser) {
-      setUser(JSON.parse(storedUser));
+      setUser(storedUser);
     }
+    setauthLoading(false);
+    console.log("🧠 AuthContext render → user:", user, "loading:", authLoading);
   }, []);
 
   const login = async (email, password) => {
-    try {
-      const res = await axios.post(
-        "http://localhost:3003/api/auth/login",
-        { email, password }
-      );
+  const res = await axios.post(
+    `${import.meta.env.VITE_BACKEND_URL}/api/auth/login`,
+    { email, password }
+  );
 
-      // backend returns { token }
-      setUser(res.data.user);
-      console.log(user);
-      localStorage.setItem("user", JSON.stringify(res.data.user));
-    } catch (err) {
-      console.error("Error user login:", err.response?.data || err.message);
-    }
-  };
+  console.log("LOGIN API RESPONSE:", res.data);
+
+  // 🔥 REQUIRED
+  localStorage.setItem("token", res.data.token);
+  setUser(res.data.token);
+};
 
   const logout = () => {
     setUser(null);
-    localStorage.removeItem("user");
+    localStorage.removeItem("token");
   };
 
   return (
-    <AuthContext.Provider value={{ user, login, logout }}>
+    <AuthContext.Provider value={{ user,authLoading, login, logout }}>
       {children}
     </AuthContext.Provider>
   );
@@ -46,4 +48,4 @@ export const useAuth = () => {
   return useContext(AuthContext);
 };
 
-export default AuthProvider;
+

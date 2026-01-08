@@ -2,9 +2,11 @@
 import React, { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import "./register.css";
+import axios from "axios";
 
 // IMPORTANT: put your image at src/assets/register.jpg
 import illustration from "../../assets/register.jpg";
+const backendUrl = import.meta.env.VITE_BACKEND_URL;
 
 export default function Register() {
   const navigate = useNavigate();
@@ -23,15 +25,29 @@ export default function Register() {
     setForm((p) => ({ ...p, [name]: value }));
   }
 
-  function handleSubmit(e) {
-    e.preventDefault();
-    if (form.password !== form.confirm) {
-      alert("Passwords do not match!");
-      return;
-    }
-    // call API here if needed
-    navigate("/login");
+ function handleSubmit(e) {
+  e.preventDefault();
+
+  if (form.password !== form.confirm) {
+    alert("Passwords do not match!");
+    return;
   }
+
+  axios
+    .post(`${backendUrl}/api/auth/register`, {
+      name: form.name,
+      email: form.email,
+      password: form.password,
+    })
+    .then((res) => {
+      console.log("REGISTER SUCCESS:", res.data);
+      navigate("/login"); // go to login AFTER successful register
+    })
+    .catch((err) => {
+      console.error("REGISTER ERROR:", err.response?.data || err.message);
+      alert(err.response?.data?.message || "Registration failed");
+    });
+}
 
   return (
     <div className="register-container d-flex align-items-center justify-content-center min-vh-100">

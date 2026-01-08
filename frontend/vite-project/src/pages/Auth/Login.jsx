@@ -3,6 +3,7 @@ import { Link, useNavigate } from "react-router-dom";
 import "./login.css";
 //import illustration from "../../assets/login.jpg";
 import { useAuth } from "../../context/AuthContext";
+import axios from "axios";
 
 export default function Login() {
   const navigate = useNavigate();
@@ -15,10 +16,16 @@ export default function Login() {
     setForm((p) => ({ ...p, [name]: value }));
   }
 
-  function handleSubmit(e) {
+ async function handleSubmit(e) {
     e.preventDefault();
-    login(form.email,form.password)
-    navigate("/");
+   try {
+    await login(form.email, form.password); // wait for token
+    console.log("🧪 Token after login:", localStorage.getItem("token"));
+    navigate("/"); // then navigate
+  } catch (err) {
+    console.error("LOGIN ERROR", err);
+    alert("Invalid email or password");
+  }
   }
 
   return (

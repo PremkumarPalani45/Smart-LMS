@@ -1,4 +1,4 @@
-import { NavLink } from "react-router-dom";
+import { Link, NavLink } from "react-router-dom";
 import "./navbar.css";
 import { useAuth } from "../../context/AuthContext";
 
@@ -6,7 +6,8 @@ export default function Navbar() {
   const {user,logout}=useAuth();
 
   const getDisplayName = (email) => {
-  return email.split("@")[0];
+  if (!user) return "Guest";   // 🔥 FIX
+    return user.split("@")[0];   // only if user exists
 };
   return (
    <nav className="navbar navbar-expand-lg navbar-light bg-white shadow-sm fixed-top">
@@ -50,12 +51,12 @@ export default function Navbar() {
 {user ? (
   <>
     <li className="nav-item d-flex align-items-center ms-3 me-2">
-      <div
+      <Link to="/profile" className="profile"><div
         className="rounded-circle bg-primary text-white d-flex justify-content-center align-items-center"
         style={{ width: "32px", height: "32px", fontSize: "14px" }}
       >
         {getDisplayName(user.email)[0].toUpperCase()}
-      </div>
+      </div></Link>
     </li>
 
     <li className="nav-item">
