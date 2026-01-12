@@ -1,35 +1,47 @@
-import course from "../model/CourseSchema.js";
+import Course from "../model/CourseSchema.js";
 
 
 export const getCourses = async (req, res) => {
   try {
-    const { search, category, instructor, priceType } = req.query;
+    const { search, category, maxPrice, sort, minRating } = req.query;
+
 
     let filter = {};
+    let sortQuery = { updatedAt: -1 }; // newest by default
 
+    // 🔍 Search
     if (search) {
       filter.title = { $regex: search, $options: "i" };
     }
 
-    if (category) {
-      filter.category = category; // ObjectId
+    // 📂 Category
+    if (category && category !== "All") {
+  filter.category = category;
+}
+
+    // 💰 Price
+    if (maxPrice) {
+      filter.price = { $lte: Number(maxPrice) };
     }
 
-    if (instructor) {
-      filter.instructor = instructor; // ObjectId
-    }
+    // ⭐ Rating filter
+if (minRating) {
+  filter.rating = { $gte: Number(minRating) };
+}
 
-    if (priceType === "Free") {
-      filter.price = 0;
-    }
 
-    if (priceType === "Paid") {
-      filter.price = { $gt: 0 };
-    }
+    // ↕️ Sorting
+    if (sort === "priceLow") sortQuery = { price: 1 };
+    if (sort === "priceHigh") sortQuery = { price: -1 };
+    if (sort === "title") sortQuery = { title: 1 };
+    if (sort === "popular") sortQuery = { enrolledStudents: -1 };
+    if (sort === "rating") sortQuery = { rating: -1 };
 
-    const courses = await course.find(filter)
+
+    const courses = await Course
+      .find(filter)
       .populate("category", "name")
-      .populate("instructor", "name");
+      .sort(sortQuery);
 
     res.set("Cache-Control", "no-store");
 
@@ -38,28 +50,49 @@ export const getCourses = async (req, res) => {
       courses,
     });
   } catch (err) {
-    console.error(err);
-    res.status(500).json({ success: false, message: "Server error" });
+    console.error("Get courses error:", err);
+    res.status(500).json({
+      success: false,
+      message: "Server error",
+    });
   }
 };
 
 
-export const getCourse=async(req,res)=>{
-    
-   const  courseid= req.params.id;
-   try{
-      const Course=await course.findById(courseid).populate('category','name').populate('instructor','name');
 
-      if(!Course){
-     return res.status(404).json("Course not found");
+export const getCourse = async (req, res) => {
+  const courseid = req.params.id;
 
-      }
-      res.status(200).json(Course);
+  try {
+    const course = await Course.findById(courseid)
+      .populate("category", "name")
+      .populate("instructor", "name")
+      .lean();
+
+    if (!course) {
+      return res.status(404).json({ message: "Course not found" });
     }
-    catch(err){
-    return res.status(500).json("server error");
-    }
-}
+
+    const userId = req.user?._id;
+
+    const isPurchased =
+      course.price === 0 ||
+      (userId &&
+        course.enrolledStudents?.some(
+          (id) => id.toString() === userId.toString()
+        ));
+
+    return res.status(200).json({
+      ...course,
+      isPurchased,
+    });
+  } catch (err) {
+    console.error(err);
+    return res.status(500).json({ message: "Server error" });
+  }
+};
+
+
 
 export const enrollStudentIncourse = async(req,res)=>{
    // enroll user into course
@@ -69,9 +102,9 @@ export const enrollStudentIncourse = async(req,res)=>{
    try{
 
    
-   const courses= await course.findById(req.params.id);
+   const courses= await Course.findById(req.params.id);
 
-   if(!course){
+   if(!courses){
    return res.status(404).json({message:"course not found"});
    }
 
@@ -97,7 +130,7 @@ export const enrolledCourses=async(req,res)=>{
   //get my courses
 
   try{
- const myCourses= await course.find({enrolledStudents:req.user._id});
+ const myCourses= await Course.find({enrolledStudents:req.user._id});
  
  return res.status(200).json(myCourses)
   }

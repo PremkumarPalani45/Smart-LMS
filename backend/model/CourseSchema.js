@@ -32,6 +32,7 @@ const courseSchema=new Schema({
   type: String,
   required: true
 },
+rating: { type: Number, default: 0 },
 enrolledStudents:[{
     type:Schema.Types.ObjectId,
         ref:'User'}],
@@ -45,6 +46,6 @@ enrolledStudents:[{
 
 
 
-const course=mongoose.model('Courses',courseSchema)
+const Course=mongoose.model('Course',courseSchema)
 
-export default course;
+export default Course;

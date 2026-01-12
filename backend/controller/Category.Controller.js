@@ -1,14 +1,10 @@
-import category from "../model/CategorySchema.js";
+import Category from "../model/CategorySchema.js";
 
-
-export const getCategory= async(req,res)=>{
-
-
-    try{
-      const categories=await category.find({});
-      res.status(200).json(categories);
-    }
-    catch(err){
-    return res.status(500).json("server error");
-    }
-}
+export const getCategory = async (req, res) => {
+  try {
+    const categories = await Category.find().select("name");
+    res.status(200).json({ categories });
+  } catch (err) {
+    res.status(500).json({ message: "Server error" });
+  }
+};

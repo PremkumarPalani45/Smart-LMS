@@ -1,13 +1,13 @@
-import express from 'express'
-import { authProtect } from '../middleware/authMiddleware.js';
-import { createPaymentIntent } from '../controller/Payment.controller.js';
+import express from "express";
+import { authProtect } from "../middleware/authMiddleware.js";
+import { createCheckoutSession } from "../controller/Payment.controller.js";
 
-const paymentRoute=express.Router();
+const paymentRoute = express.Router();
 
-
-paymentRoute.post("/create-payment-intent",authProtect,createPaymentIntent)
-//courseRoute.get("/:id",getCourse)
-
-
+paymentRoute.post(
+  "/create-checkout-session",
+  authProtect,
+  createCheckoutSession
+);
 
 export default paymentRoute;
