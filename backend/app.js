@@ -18,25 +18,24 @@ const port = process.env.PORT || 3003;
 app.use("/uploads", express.static("uploads"));
 app.use(express.json());
 const allowedOrigins = [
+  "http://localhost:5173",
   "https://thriving-truffle-c6c269.netlify.app"
 ];
 
 app.use(
   cors({
     origin: function (origin, callback) {
-      if (!origin) return callback(null, true); // allow Postman / server calls
+      if (!origin) return callback(null, true); // Postman, server calls
       if (allowedOrigins.includes(origin)) {
         return callback(null, true);
-      } else {
-        return callback(new Error("CORS not allowed"));
       }
+      return callback(new Error("CORS not allowed"));
     },
     credentials: true,
     methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
     allowedHeaders: ["Content-Type", "Authorization"],
   })
 );
-app.options("*", cors());
 
 
 if (process.env.NODE_ENV === "dev") {
