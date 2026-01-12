@@ -5,7 +5,8 @@ import axios from "axios";
 import courseImg1 from "../../public/assets/course1.jpg";
 import courseImg2 from "../../assets/course2.jpg";
 import courseImg3 from "../../assets/course3.jpg";
-const backendUrl= import.meta.env.VITE_BACKEND_URL;
+//const backendUrl = import.meta.env.VITE_BACKEND_URL;
+const backendUrl = import.meta.env.VITE_API_URL;
 
 export default function FeaturedCoursesSection() {
   const [courses, setCourses] = useState([]);

@@ -7,8 +7,9 @@ import { useCart } from "../../context/CartContext";
 
 
 
-const API = import.meta.env.VITE_BACKEND_URL + "/api";
-
+//const API = import.meta.env.VITE_BACKEND_URL + "/api";
+//const backendUrl = import.meta.env.VITE_BACKEND_URL;
+const backendUrl = import.meta.env.VITE_API_URL + "/api";
 export default function Navbar() {
   const { user, logout ,authLoading } = useAuth();
   //const [cartCount, setCartCount] = useState(0);

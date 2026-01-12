@@ -10,6 +10,8 @@ export default function Login() {
   const [form, setForm] = useState({ email: "", password: "" });
   const [showPwd, setShowPwd] = useState(false);
   const {login,logout}=useAuth();
+  //const backendUrl = import.meta.env.VITE_BACKEND_URL;
+const backendUrl = import.meta.env.VITE_API_URL;
 
   function handleChange(e) {
     const { name, value } = e.target;
@@ -21,7 +23,7 @@ export default function Login() {
 
   try {
     const res = await axios.post(
-      "http://localhost:3003/api/auth/login",
+      `${backendUrl}/api/auth/login`,
       {
         email: form.email,
         password: form.password,

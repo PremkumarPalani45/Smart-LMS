@@ -4,8 +4,8 @@ import { useAuth } from "../../context/AuthContext";
 import { CourseCard} from "./CourseCard";
 import { CourseSkeleton } from "./CourseSkeleton";
 
-const backendUrl = import.meta.env.VITE_BACKEND_URL;
-
+//const backendUrl = import.meta.env.VITE_BACKEND_URL;
+const backendUrl = import.meta.env.VITE_API_URL;
 export default function MyLearningPage() {
   const [courses, setCourses] = useState([]);
   const [loading, setLoading] = useState(false);

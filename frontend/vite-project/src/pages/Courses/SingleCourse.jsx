@@ -10,7 +10,8 @@ export default function SingleCourses() {
   const [course, setCourse] = useState(null);
   const [loading, setLoading] = useState(true);
 
-  const backendUrl = import.meta.env.VITE_BACKEND_URL;
+  //const backendUrl = import.meta.env.VITE_BACKEND_URL;
+const backendUrl = import.meta.env.VITE_API_URL;
 
   // 🔹 Fetch single course (with isPurchased)
   useEffect(() => {

@@ -4,6 +4,8 @@ import API from "../utils/api";
 import { useAuth } from "./AuthContext";
 
 const CartContext = createContext();
+//const backendUrl = import.meta.env.VITE_BACKEND_URL;
+const backendUrl = import.meta.env.VITE_API_URL;
 
 export const CartProvider = ({ children }) => {
   const { user, authLoading } = useAuth();

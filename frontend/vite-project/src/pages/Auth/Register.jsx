@@ -6,7 +6,8 @@ import axios from "axios";
 
 // IMPORTANT: put your image at src/assets/register.jpg
 import illustration from "../../assets/register.jpg";
-const backendUrl = import.meta.env.VITE_BACKEND_URL;
+//const backendUrl = import.meta.env.VITE_BACKEND_URL;
+const backendUrl = import.meta.env.VITE_API_URL;
 
 export default function Register() {
   const navigate = useNavigate();

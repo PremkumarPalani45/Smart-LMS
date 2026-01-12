@@ -1,7 +1,8 @@
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 
-const API = import.meta.env.VITE_BACKEND_URL;
+//const backendUrl = import.meta.env.VITE_BACKEND_URL;
+const backendUrl = import.meta.env.VITE_API_URL;
 
 export default function Courses() {
   const [courses, setCourses] = useState([]);
@@ -36,7 +37,7 @@ export default function Courses() {
 
     setLoading(true);
 
-    fetch(`${API}/api/courses?${params.toString()}`, { cache: "no-store" })
+    fetch(`${backendUrl}/api/courses?${params.toString()}`, { cache: "no-store" })
       .then(res => res.json())
       .then(data => {
         setCourses(data.courses || []);

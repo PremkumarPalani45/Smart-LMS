@@ -2,7 +2,8 @@ import { createContext, useContext, useEffect, useState } from "react";
  import axios from "axios";
 
 const AuthContext = createContext();
-
+//const backendUrl = import.meta.env.VITE_BACKEND_URL;
+const backendUrl = import.meta.env.VITE_API_URL;
 export const AuthProvider = ({ children }) => {
   const [user, setUser] = useState(null);
   const [authLoading, setAuthLoading] = useState(true);
@@ -18,7 +19,7 @@ useEffect(() => {
   }
 
   axios
-    .get("http://localhost:3003/api/auth/me", {
+    .get(`${backendUrl}/api/auth/me`, {
       headers: {
         Authorization: `Bearer ${token}`,
       },

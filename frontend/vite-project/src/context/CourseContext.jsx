@@ -2,7 +2,8 @@ import { createContext, useContext, useEffect, useState } from "react";
 import axios from "axios";
 
 const CourseContext = createContext();
-const backendUrl = import.meta.env.VITE_BACKEND_URL;
+//const backendUrl = import.meta.env.VITE_BACKEND_URL;
+const backendUrl = import.meta.env.VITE_API_URL;
 export const CourseProvider = ({ children }) => {
   const [courses, setCourses] = useState([]);
   const [loading, setLoading] = useState(false);
