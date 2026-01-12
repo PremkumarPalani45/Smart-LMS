@@ -2,7 +2,7 @@ import { createContext, useContext, useEffect, useState } from "react";
 import axios from "axios";
 
 const CourseContext = createContext();
-
+const backendUrl = import.meta.env.VITE_BACKEND_URL;
 export const CourseProvider = ({ children }) => {
   const [courses, setCourses] = useState([]);
   const [loading, setLoading] = useState(false);
@@ -14,7 +14,7 @@ export const CourseProvider = ({ children }) => {
     const token = localStorage.getItem("token");
 
     const res = await axios.get(
-      "http://localhost:3003/api/courses",
+      `${backendUrl}/api/courses`,
       {
         headers: {
           Authorization: token ? `Bearer ${token}` : "",

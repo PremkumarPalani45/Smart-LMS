@@ -162,10 +162,13 @@ export default function Courses() {
             </div>
           ) : (
             <div className="row g-4">
-              {courses.length === 0 ? (
-                <p className="text-muted text-center">
-                  No courses found
-                </p>
+             {courses.length === 0 ? (
+  <div className="col-12 text-center py-5">
+    <h5 className="fw-semibold mb-2">No courses available yet 📚</h5>
+    <p className="text-muted">
+      We’re preparing high-quality courses. Please check back soon!
+    </p>
+  </div>
               ) : (
                 courses.map(course => (
                   <div key={course._id} className="col-sm-6 col-lg-4">
