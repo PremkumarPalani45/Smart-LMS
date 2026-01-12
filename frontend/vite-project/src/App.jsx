@@ -16,7 +16,7 @@ import { ToastContainer } from "react-toastify";
 import { useAuth } from "./context/AuthContext";
 import CartPage from "./pages/Cart/CartPage";
 import Checkout from "./pages/Checkout/Checkout";
-import PaymentSuccess from "./pages/Checkout/Paymentsuccess";
+import PaymentSuccess from "./pages/Checkout/PaymentSuccess";
 
 
 export default function App() {
