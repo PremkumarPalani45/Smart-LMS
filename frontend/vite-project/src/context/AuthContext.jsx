@@ -1,51 +1,60 @@
 import { createContext, useContext, useEffect, useState } from "react";
-import axios from "axios";
+ import axios from "axios";
 
 const AuthContext = createContext();
 
 export const AuthProvider = ({ children }) => {
   const [user, setUser] = useState(null);
-  const [authLoading,setauthLoading]=useState(true);
+  const [authLoading, setAuthLoading] = useState(true);
 
-  // 🔥 Restore user after refresh
-  useEffect(() => {
-    const storedUser = localStorage.getItem("token");
-    console.log("🔁 Auth restore effect running");
-  console.log("📦 Token from localStorage:", storedUser);
-    if (storedUser) {
-      setUser(storedUser);
-    }
-    setauthLoading(false);
-    console.log("🧠 AuthContext render → user:", user, "loading:", authLoading);
-  }, []);
+  // 🔥 Restore auth on refresh
+ 
+useEffect(() => {
+  const token = localStorage.getItem("token");
 
-  const login = async (email, password) => {
-  const res = await axios.post(
-    `${import.meta.env.VITE_BACKEND_URL}/api/auth/login`,
-    { email, password }
-  );
+  if (!token) {
+    setAuthLoading(false);
+    return;
+  }
 
-  console.log("LOGIN API RESPONSE:", res.data);
+  axios
+    .get("http://localhost:3003/api/auth/me", {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    })
+    .then((res) => {
+      setUser(res.data.user); // backend verified
+    })
+    .catch(() => {
+      // 🔥 token expired / invalid
+      localStorage.removeItem("user");
+      localStorage.removeItem("token");
+      setUser(null);
+    })
+    .finally(() => {
+      setAuthLoading(false);
+    });
+}, []);
 
-  // 🔥 REQUIRED
-  localStorage.setItem("token", res.data.token);
-  setUser(res.data.token);
-};
+
+  const login = (userData, token) => {
+    localStorage.setItem("user", JSON.stringify(userData));
+    localStorage.setItem("token", token);
+    setUser(userData);
+  };
 
   const logout = () => {
-    setUser(null);
+    localStorage.removeItem("user");
     localStorage.removeItem("token");
+    setUser(null);
   };
 
   return (
-    <AuthContext.Provider value={{ user,authLoading, login, logout }}>
+    <AuthContext.Provider value={{ user, authLoading, login, logout }}>
       {children}
     </AuthContext.Provider>
   );
 };
 
-export const useAuth = () => {
-  return useContext(AuthContext);
-};
-
-
+export const useAuth = () => useContext(AuthContext);

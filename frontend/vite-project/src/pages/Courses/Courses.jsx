@@ -1,211 +1,229 @@
-import { useState, useEffect } from "react";
+import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 
-const API = "http://localhost:3003/api";
+const API = import.meta.env.VITE_BACKEND_URL;
 
 export default function Courses() {
   const [courses, setCourses] = useState([]);
   const [categories, setCategories] = useState([]);
-  const [instructors, setInstructors] = useState([]);
   const [loading, setLoading] = useState(true);
 
   // Filters
   const [search, setSearch] = useState("");
   const [category, setCategory] = useState("All");
-  const [instructor, setInstructor] = useState("All");
-  const [maxPrice, setMaxPrice] = useState(300); // ✅ numeric range
+  const [maxPrice, setMaxPrice] = useState(300);
+  const [sort, setSort] = useState("latest");
+  const [minRating, setMinRating] = useState(0);
 
-  // 🔹 Fetch categories & instructors (ONCE)
+  // 🔹 Fetch categories (from MongoDB)
   useEffect(() => {
-    fetch(`${API}/categories`)
+    fetch(`${API}/api/category`)
       .then(res => res.json())
-      .then(data => setCategories(data.categories || []));
-
-    fetch(`${API}/instructors`)
-      .then(res => res.json())
-      .then(data => setInstructors(data.instructors || []));
+      .then(data => setCategories(data.categories || []))
+      .catch(() => setCategories([]));
   }, []);
 
-  // 🔹 Fetch courses (filter-driven)
+  // 🔹 Fetch courses (filter + sort driven)
   useEffect(() => {
     const params = new URLSearchParams();
 
     if (search) params.append("search", search);
     if (category !== "All") params.append("category", category);
-    if (instructor !== "All") params.append("instructor", instructor);
     if (maxPrice < 300) params.append("maxPrice", maxPrice);
+    if (sort) params.append("sort", sort);
+    if (minRating > 0) params.append("minRating", minRating);
+
 
     setLoading(true);
 
-    fetch(`${API}/courses?${params.toString()}`, { cache: "no-store" })
+    fetch(`${API}/api/courses?${params.toString()}`, { cache: "no-store" })
       .then(res => res.json())
       .then(data => {
         setCourses(data.courses || []);
         setLoading(false);
       })
       .catch(() => setLoading(false));
-  }, [search, category, instructor, maxPrice]);
+      console.log("Fetching courses with:", params.toString());
 
-  if (loading) {
-    return (
-      <div className="container mt-5 text-center">
-        <p>Loading courses...</p>
-      </div>
-    );
-  }
+  }, [search, category, maxPrice, sort,minRating]);
 
   return (
-    <div className="container-fluid mt-5">
+    <div className="container-fluid pt-5 mt-4">
+
       <div className="row">
 
-        {/* ================= FILTERS ================= */}
-        <div className="col-lg-3">
-          <div className="bg-white p-3 border-end position-sticky top-0">
+        {/* ================= LEFT FILTERS ================= */}
+        <div className="col-lg-3 mb-4">
+          <div className="bg-white p-4 border rounded-4 shadow-sm position-sticky top-0">
 
-            <h6 className="fw-semibold mb-3">Filters</h6>
+            <h5 className="fw-bold mb-4">Filter Courses</h5>
+
+            {/* SEARCH */}
+            <div className="mb-4">
+              <label className="fw-semibold mb-2">Search</label>
+              <input
+                className="form-control"
+                placeholder="Search courses..."
+                value={search}
+                onChange={(e) => setSearch(e.target.value)}
+              />
+            </div>
+
+            {/* CATEGORY */}
+            <div className="mb-4">
+              <label className="fw-semibold mb-2">Category</label>
+              <select
+                className="form-select"
+                value={category}
+                onChange={(e) => setCategory(e.target.value)}
+              >
+                <option value="All">All Categories</option>
+                {categories.map(cat => (
+                  <option key={cat._id} value={cat._id}>
+                    {cat.name}
+                  </option>
+                ))}
+              </select>
+            </div>
 
             {/* PRICE */}
-            <div className="mb-4">
-              <p className="fw-semibold mb-2">Price</p>
+            <div>
+              <label className="fw-semibold mb-2">Price</label>
 
               <input
                 type="range"
                 className="form-range"
                 min="0"
                 max="300"
-                step="100"
+                step="50"
                 value={maxPrice}
                 onChange={(e) => setMaxPrice(Number(e.target.value))}
               />
 
               <div className="d-flex justify-content-between small text-muted">
-                <span>₹0</span>
-                <span>₹100</span>
-                <span>₹200</span>
-                <span>₹300+</span>
+                <span>$0</span>
+                <span>$150</span>
+                <span>$300</span>
               </div>
 
-              <p className="mt-2 small">
-                Selected:{" "}
-                <strong>
-                  {maxPrice === 300 ? "All Prices" : `Up to ₹${maxPrice}`}
-                </strong>
-              </p>
+              <div className="mt-2 fw-semibold small">
+  {maxPrice === 300 ? "All Prices" : `Up to ₹${maxPrice}`}
+</div>
             </div>
 
-            <hr />
+            <div className="mt-4">
+  <label className="fw-semibold mb-2">Minimum Rating</label>
 
-            {/* CATEGORY */}
-            <div className="mb-4">
-              <p className="fw-semibold mb-2">Category</p>
-
-              <div className="form-check mb-2">
-                <input
-                  className="form-check-input"
-                  type="radio"
-                  name="categoryFilter"
-                  checked={category === "All"}
-                  onChange={() => setCategory("All")}
-                />
-                <label className="form-check-label">All</label>
-              </div>
-
-              <div className="overflow-auto" style={{ maxHeight: "180px" }}>
-                {categories.map(cat => (
-                  <div className="form-check mb-2" key={cat._id}>
-                    <input
-                      className="form-check-input"
-                      type="radio"
-                      name="categoryFilter"
-                      checked={category === cat._id}
-                      onChange={() => setCategory(cat._id)}
-                    />
-                    <label className="form-check-label">
-                      {cat.name}
-                    </label>
-                  </div>
-                ))}
-              </div>
-            </div>
-
-            <hr />
-
-            {/* INSTRUCTOR */}
-            <div>
-              <p className="fw-semibold mb-2">Instructor</p>
-
-              <div className="form-check mb-2">
-                <input
-                  className="form-check-input"
-                  type="radio"
-                  name="instructorFilter"
-                  checked={instructor === "All"}
-                  onChange={() => setInstructor("All")}
-                />
-                <label className="form-check-label">All</label>
-              </div>
-
-              <div className="overflow-auto" style={{ maxHeight: "180px" }}>
-                {instructors.map(inst => (
-                  <div className="form-check mb-2" key={inst._id}>
-                    <input
-                      className="form-check-input"
-                      type="radio"
-                      name="instructorFilter"
-                      checked={instructor === inst._id}
-                      onChange={() => setInstructor(inst._id)}
-                    />
-                    <label className="form-check-label">
-                      {inst.name}
-                    </label>
-                  </div>
-                ))}
-              </div>
-            </div>
+  <select
+    className="form-select"
+    value={minRating}
+    onChange={(e) => setMinRating(Number(e.target.value))}
+  >
+    <option value={0}>All Ratings</option>
+    <option value={5}>★★★★★ 5</option>
+    <option value={4}>★★★★☆ 4+</option>
+    <option value={3}>★★★☆☆ 3+</option>
+    <option value={2}>★★☆☆☆ 2+</option>
+    <option value={1}>★☆☆☆☆ 1+</option>
+  </select>
+</div>
 
           </div>
         </div>
 
-        {/* ================= COURSES ================= */}
+        {/* ================= RIGHT CONTENT ================= */}
         <div className="col-lg-9">
-          <input
-            className="form-control mb-4"
-            placeholder="Search courses..."
-            value={search}
-            onChange={e => setSearch(e.target.value)}
-          />
 
-          <div className="row g-4">
-            {courses.length === 0 ? (
-              <p className="text-muted text-center">No courses found</p>
-            ) : (
-              courses.map(course => (
-                <div key={course._id} className="col-md-6 col-lg-4">
-                  <Link
-                    to={`/courses/${course._id}`}
-                    className="text-dark text-decoration-none"
-                  >
-                    <div className="card h-100 shadow-sm">
-                      <img
-                        src={course.image || "https://via.placeholder.com/400x200"}
-                        className="card-img-top"
-                        style={{ height: 160, objectFit: "cover" }}
-                        alt={course.title}
-                      />
-                      <div className="card-body">
-                        <h6 className="mb-1">{course.title}</h6>
-                        <small className="text-muted">
-                          {course.instructor?.name}
-                        </small>
-                      </div>
-                    </div>
-                  </Link>
-                </div>
-              ))
-            )}
+          {/* SORT + COUNT */}
+          <div className="d-flex flex-column flex-md-row justify-content-between align-items-md-center gap-3 mb-4">
+
+            <p className="mb-0 text-muted">
+              Showing <strong>{courses.length}</strong> courses
+            </p>
+
+            <select
+              className="form-select w-auto"
+              value={sort}
+              onChange={(e) => setSort(e.target.value)}
+            >
+              <option value="latest">Newest</option>
+              <option value="priceLow">Price: Low → High</option>
+              <option value="priceHigh">Price: High → Low</option>
+              <option value="title">Title (A–Z)</option>
+              <option value="rating">Highest Rated</option>
+            </select>
+
           </div>
-        </div>
 
+          {/* COURSES GRID */}
+          {loading ? (
+            <div className="text-center mt-5">
+              <div className="spinner-border text-primary"></div>
+            </div>
+          ) : (
+            <div className="row g-4">
+              {courses.length === 0 ? (
+                <p className="text-muted text-center">
+                  No courses found
+                </p>
+              ) : (
+                courses.map(course => (
+                  <div key={course._id} className="col-sm-6 col-lg-4">
+                    <Link
+                      to={`/courses/${course._id}`}
+                      className="text-decoration-none text-dark"
+                    >
+                      <div className="card h-100 border-0 shadow-sm rounded-4">
+
+                        <img
+                          src={course.image || "https://via.placeholder.com/400x200"}
+                          className="card-img-top rounded-top-4"
+                          style={{ height: 180, objectFit: "cover" }}
+                          alt={course.title}
+                        />
+
+                        <div className="card-body d-flex flex-column">
+                          <h6 className="fw-semibold mb-1">
+                            {course.title}
+                          </h6>
+
+                          <small className="text-muted mb-2">
+                            {course.category?.name}
+                          </small>
+
+                          {/* RATING STARS */}
+<div className="mb-2">
+  {[1, 2, 3, 4, 5].map((star) => (
+    <span
+      key={star}
+      className={
+        star <= course.rating
+          ? "text-warning"
+          : "text-secondary"
+      }
+    >
+      ★
+    </span>
+  ))}
+  <span className="small text-muted ms-1">
+    ({course.rating})
+  </span>
+</div>
+
+                          <div className="mt-auto fw-bold text-primary">
+                            {course.price === 0 ? "Free" : `$${course.price}`}
+                          </div>
+                        </div>
+
+                      </div>
+                    </Link>
+                  </div>
+                ))
+              )}
+            </div>
+          )}
+
+        </div>
       </div>
     </div>
   );

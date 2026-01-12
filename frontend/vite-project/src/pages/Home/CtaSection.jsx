@@ -1,6 +1,8 @@
-// src/pages/Home/CtaSection.jsx
+import { Link } from "react-router-dom";
 
 export default function CtaSection() {
+  const isLoggedIn = !!localStorage.getItem("token");
+
   return (
     <section className="cta-modern">
       <div className="container text-center cta-content">
@@ -10,9 +12,21 @@ export default function CtaSection() {
           Join thousands of learners and upskill yourself with Smart LMS today.
         </p>
 
-        <button className="btn btn-light btn-lg fw-semibold cta-btn">
-          Get Started Now
-        </button>
+        {!isLoggedIn ? (
+          <Link
+            to="/login"
+            className="btn btn-light btn-lg fw-semibold cta-btn"
+          >
+            Get Started Now
+          </Link>
+        ) : (
+          <Link
+            to="/learning"
+            className="btn btn-light btn-lg fw-semibold cta-btn"
+          >
+            Continue Learning
+          </Link>
+        )}
       </div>
     </section>
   );

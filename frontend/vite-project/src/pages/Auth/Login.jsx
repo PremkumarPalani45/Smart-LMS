@@ -17,16 +17,29 @@ export default function Login() {
   }
 
  async function handleSubmit(e) {
-    e.preventDefault();
-   try {
-    await login(form.email, form.password); // wait for token
-    console.log("🧪 Token after login:", localStorage.getItem("token"));
-    navigate("/"); // then navigate
+  e.preventDefault();
+
+  try {
+    const res = await axios.post(
+      "http://localhost:3003/api/auth/login",
+      {
+        email: form.email,
+        password: form.password,
+      }
+    );
+
+    console.log("🧪 REAL TOKEN:", res.data.token); // must look like JWT
+
+    // ✅ PASS CORRECT VALUES
+    login(res.data.user, res.data.token);
+
+    navigate("/");
   } catch (err) {
     console.error("LOGIN ERROR", err);
     alert("Invalid email or password");
   }
-  }
+}
+
 
   return (
     <div className="login-page-wrapper d-flex align-items-center justify-content-center">

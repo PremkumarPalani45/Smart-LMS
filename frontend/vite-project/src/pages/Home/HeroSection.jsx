@@ -1,8 +1,9 @@
-// src/pages/Home/HeroSection.jsx
 import { Link } from "react-router-dom";
 import illustration from "../../assets/hero.jpg";
 
 export default function HeroSection() {
+  const isLoggedIn = !!localStorage.getItem("token");
+
   return (
     <section className="hero-section">
       <div className="container py-5">
@@ -19,9 +20,21 @@ export default function HeroSection() {
             </p>
 
             <div className="d-flex flex-wrap gap-2 mt-4">
-              <Link to="/register" className="btn btn-outline-light btn-lg">
-                Get Started
-              </Link>
+              {!isLoggedIn ? (
+                <Link
+                  to="/register"
+                  className="btn btn-outline-light btn-lg"
+                >
+                  Get Started
+                </Link>
+              ) : (
+                <Link
+                  to="/learning"
+                  className="btn btn-outline-light btn-lg"
+                >
+                  Continue Learning
+                </Link>
+              )}
             </div>
           </div>
 

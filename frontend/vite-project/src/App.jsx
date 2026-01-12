@@ -11,8 +11,24 @@ import PrivateRoute from "./components/PrivateRoute";
 import MyLearningPage from "./pages/MyCourses/MyLearningPage";
 import LearnCourse from "./pages/MyCourses/LearnCourse";
 import Userprofile from "./pages/profile/Userprofile";
+import "react-toastify/dist/ReactToastify.css";
+import { ToastContainer } from "react-toastify";
+import { useAuth } from "./context/AuthContext";
+import CartPage from "./pages/Cart/CartPage";
+import Checkout from "./pages/Checkout/Checkout";
+import PaymentSuccess from "./pages/Checkout/Paymentsuccess";
+
 
 export default function App() {
+   const { authLoading } = useAuth();
+
+  if (authLoading) {
+    return (
+      <div className="vh-100 d-flex justify-content-center align-items-center">
+        <div className="spinner-border text-primary" />
+      </div>
+    );
+  }
   return (
     <div className="d-flex flex-column min-vh-100">
       <Navbar />
@@ -28,11 +44,24 @@ export default function App() {
            <Route path="/learning" element={<MyLearningPage />} />
            <Route path="/learning/:courseId" element={<LearnCourse />} />
            <Route path="/profile" element={<Userprofile/>}/>
+           <Route path="/cart" element={<CartPage/>}/>
+           <Route path="/checkout" element={<Checkout/>}/>
+           <Route path="/payment-success" element={<PaymentSuccess />} />
            </Route>
         </Routes>
       </main>
 
       <Footer />
+       {/* 🔥 Toast container */}
+      <ToastContainer
+        position="top-right"
+        autoClose={3000}
+        hideProgressBar={false}
+        newestOnTop
+        closeOnClick
+        pauseOnHover
+        theme="light"
+      />
     </div>
   );
 }

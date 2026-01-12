@@ -10,7 +10,8 @@ export default function MyLearningPage() {
   const [courses, setCourses] = useState([]);
   const [loading, setLoading] = useState(false);
 
-  const { user } = useAuth();
+  const { user, authLoading } = useAuth();
+
 
   useEffect(() => {
     const fetchMyCourses = async () => {
@@ -19,9 +20,9 @@ export default function MyLearningPage() {
         const res = await axios.get(
           `${backendUrl}/api/courses/myCourses`,
           {
-            headers: {
-              Authorization: `Bearer ${user}`,
-            },
+          headers: {
+      Authorization: `Bearer ${localStorage.getItem("token")}`,
+    },
           }
         );
         setCourses(res.data);
@@ -32,8 +33,10 @@ export default function MyLearningPage() {
       }
     };
 
-    if (user) fetchMyCourses();
-  }, [user]);
+     if (!authLoading && user) {
+    fetchMyCourses();
+  }
+}, [authLoading, user]);
 
   return (
     <div className="container py-4">
@@ -59,7 +62,7 @@ export default function MyLearningPage() {
       <div className="row">
         {!loading &&
           courses.map((course) => (
-            <div className="col-md-4 mb-4" key={course._id}>
+            <div className="col-12 mb-3" key={course._id}>
               <CourseCard course={course} />
             </div>
           ))}
