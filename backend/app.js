@@ -15,8 +15,9 @@ import Orderrouter from './route/Order.Route.js';
 console.log(process.env.PORT)
 const app = express();
 const port = process.env.PORT || 3003;
-app.use("/uploads", express.static("uploads"));
-app.use(express.json());
+
+//const app = express();
+
 const allowedOrigins = [
   "http://localhost:5173",
   "https://thriving-truffle-c6c269.netlify.app"
@@ -24,18 +25,24 @@ const allowedOrigins = [
 
 app.use(
   cors({
-    origin: function (origin, callback) {
-      if (!origin) return callback(null, true); // Postman, server calls
+    origin: (origin, callback) => {
+      if (!origin) return callback(null, true);
       if (allowedOrigins.includes(origin)) {
         return callback(null, true);
       }
-      return callback(new Error("CORS not allowed"));
+      callback(new Error("Not allowed by CORS"));
     },
     credentials: true,
-    methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
-    allowedHeaders: ["Content-Type", "Authorization"],
   })
 );
+
+// 🔥 IMPORTANT: allow preflight
+app.options("*", cors());
+
+
+app.use("/uploads", express.static("uploads"));
+app.use(express.json());
+
 
 
 if (process.env.NODE_ENV === "dev") {
