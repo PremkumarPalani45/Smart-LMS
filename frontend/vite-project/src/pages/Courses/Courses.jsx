@@ -18,7 +18,7 @@ export default function Courses() {
 
   // 🔹 Fetch categories (from MongoDB)
   useEffect(() => {
-    fetch(`${API}/api/category`)
+    fetch(`${backendUrl}/api/category`)
       .then(res => res.json())
       .then(data => setCategories(data.categories || []))
       .catch(() => setCategories([]));
