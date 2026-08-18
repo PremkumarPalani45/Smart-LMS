@@ -6,7 +6,7 @@ const courseRoute=express.Router();
 
 courseRoute.get("/myCourses",authProtect,enrolledCourses)
 courseRoute.get("/",getCourses)
-courseRoute.get("/:id",authProtect,getCourse)
+courseRoute.get("/:id",getCourse)
 
 
 courseRoute.post("/:id/enroll",authProtect,enrollStudentIncourse)
